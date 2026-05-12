@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartão Interativo Premium</title>
+    <style>
+        body {
+            margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh;
+            background: #050505;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+
+        /* O brilho colorido que vai seguir o mouse ao fundo */
+        #blob {
+            background-color: white;
+            height: 250px;
+            aspect-ratio: 1;
+            position: absolute;
+            left: 50%; top: 50%;
+            translate: -50% -50%;
+            border-radius: 50%;
+            background: linear-gradient(to right, #00dbde, #fc00ff);
+            filter: blur(80px);
+            opacity: 0.5;
+            z-index: -1;
+            transition: all 0.1s ease-out;
+        }
+
+        .card {
+            width: 350px; height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            color: white;
+            position: relative;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.2);
+        }
+
+        .chip { width: 45px; margin-bottom: 20px; }
+        .number { font-size: 1.1rem; letter-spacing: 3px; margin-bottom: 10px; }
+        .name { font-size: 0.9rem; text-transform: uppercase; color: #aaa; }
+        .logo { position: absolute; bottom: 25px; right: 25px; width: 40px; opacity: 0.6; }
+    </style>
+</head>
+<body>
+
+    <!-- Esse é o círculo colorido que vai seguir o mouse -->
+    <div id="blob"></div>
+
+    <div class="card">
+        <img src="https://flaticon.com" class="chip">
+        <div class="number">**** **** **** 2024</div>
+        <div class="name">Tatson Jacomo</div>
+        <div class="name" style="font-size: 0.6rem; margin-top: 5px;">Front-end Developer</div>
+        <img src="https://flaticon.com" class="logo">
+    </div>
+
+    <script>
+        const blob = document.getElementById("blob");
+
+        // Esta função detecta o movimento do mouse e move o brilho
+        document.body.onmousemove = event => {
+            const { clientX, clientY } = event;
+            
+            blob.animate({
+                left: `${clientX}px`,
+                top: `${clientY}px`
+            }, { duration: 3000, fill: "forwards" });
+        }
+    </script>
+</body>
+</html>
