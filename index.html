@@ -9,15 +9,14 @@
             margin: 0; padding: 0;
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh;
-            background: #050505;
+            background: #020202;
             font-family: 'Poppins', sans-serif;
             overflow: hidden;
+            perspective: 1000px; /* Essential for 3D tilt */
         }
 
-        /* O brilho colorido que vai seguir o mouse ao fundo */
         #blob {
-            background-color: white;
-            height: 250px;
+            height: 300px;
             aspect-ratio: 1;
             position: absolute;
             left: 50%; top: 50%;
@@ -25,53 +24,107 @@
             border-radius: 50%;
             background: linear-gradient(to right, #00dbde, #fc00ff);
             filter: blur(80px);
-            opacity: 0.5;
+            opacity: 0.4;
             z-index: -1;
-            transition: all 0.1s ease-out;
+            pointer-events: none; /* Prevents the blob from interfering with clicks */
         }
 
         .card {
-            width: 350px; height: 200px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
+            width: 380px; height: 220px;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 30px;
             color: white;
             position: relative;
-            box-shadow: 0 25px 45px rgba(0,0,0,0.2);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.5);
+            transition: transform 0.1s ease-out; /* Smooth tilt return */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        .chip { width: 45px; margin-bottom: 20px; }
-        .number { font-size: 1.1rem; letter-spacing: 3px; margin-bottom: 10px; }
-        .name { font-size: 0.9rem; text-transform: uppercase; color: #aaa; }
-        .logo { position: absolute; bottom: 25px; right: 25px; width: 40px; opacity: 0.6; }
+        /* CSS-only Card Chip */
+        .chip { 
+            width: 50px; height: 35px; 
+            background: linear-gradient(135deg, #fceabb 0%, #f8b500 100%);
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .number { 
+            font-size: 1.4rem; 
+            letter-spacing: 4px; 
+            font-weight: 500;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .info-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .name-label { font-size: 0.65rem; text-transform: uppercase; color: #888; letter-spacing: 1px; }
+        .name-val { font-size: 0.9rem; text-transform: uppercase; margin-top: 2px; }
+        
+        /* Master/Visa style circles */
+        .logo-circles {
+            display: flex;
+            opacity: 0.7;
+        }
+        .circle { width: 30px; height: 30px; border-radius: 50%; }
+        .c1 { background: #eb001b; margin-right: -10px; }
+        .c2 { background: #f79e1b; }
     </style>
 </head>
 <body>
 
-    <!-- Esse é o círculo colorido que vai seguir o mouse -->
     <div id="blob"></div>
 
-    <div class="card">
-        <img src="https://flaticon.com" class="chip">
+    <div class="card" id="card">
+        <div class="chip"></div>
+        
         <div class="number">**** **** **** 2024</div>
-        <div class="name">Tatson Jacomo</div>
-        <div class="name" style="font-size: 0.6rem; margin-top: 5px;">Front-end Developer</div>
-        <img src="https://flaticon.com" class="logo">
+        
+        <div class="info-footer">
+            <div>
+                <div class="name-label">Card Holder</div>
+                <div class="name-val">Tatson Jacomo</div>
+                <div class="name-label" style="margin-top: 5px;">Front-end Developer</div>
+            </div>
+            <div class="logo-circles">
+                <div class="circle c1"></div>
+                <div class="circle c2"></div>
+            </div>
+        </div>
     </div>
 
     <script>
         const blob = document.getElementById("blob");
+        const card = document.getElementById("card");
 
-        // Esta função detecta o movimento do mouse e move o brilho
         document.body.onmousemove = event => {
             const { clientX, clientY } = event;
             
+            // Move the blob
             blob.animate({
                 left: `${clientX}px`,
                 top: `${clientY}px`
             }, { duration: 3000, fill: "forwards" });
+
+            // 3D Tilt Effect
+            const xRotation = ((clientY - window.innerHeight / 2) / window.innerHeight) * 20;
+            const yRotation = ((clientX - window.innerWidth / 2) / window.innerWidth) * -20;
+            
+            card.style.transform = `rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
+        };
+
+        // Reset tilt when mouse leaves
+        document.body.onmouseleave = () => {
+            card.style.transform = `rotateX(0deg) rotateY(0deg)`;
         }
     </script>
 </body>
