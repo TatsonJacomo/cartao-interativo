@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cartão Interativo Premium</title>
+    <title>Cartão Interativo Tatson</title>
     <style>
         body {
             margin: 0; padding: 0;
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh;
-            background: #020202;
+            background: #050505;
             font-family: 'Poppins', sans-serif;
             overflow: hidden;
-            perspective: 1000px; /* Essential for 3D tilt */
+            perspective: 1000px;
         }
 
         #blob {
-            height: 300px;
+            height: 250px;
             aspect-ratio: 1;
             position: absolute;
             left: 50%; top: 50%;
@@ -24,60 +24,55 @@
             border-radius: 50%;
             background: linear-gradient(to right, #00dbde, #fc00ff);
             filter: blur(80px);
-            opacity: 0.4;
+            opacity: 0.5;
             z-index: -1;
-            pointer-events: none; /* Prevents the blob from interfering with clicks */
         }
 
         .card {
-            width: 380px; height: 220px;
-            background: rgba(255, 255, 255, 0.07);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            width: 350px; height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px;
             color: white;
             position: relative;
-            box-shadow: 0 25px 45px rgba(0,0,0,0.5);
-            transition: transform 0.1s ease-out; /* Smooth tilt return */
+            box-shadow: 0 25px 45px rgba(0,0,0,0.2);
+            transition: transform 0.1s ease-out;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
-        /* CSS-only Card Chip */
+        /* Chip do cartão feito com CSS */
         .chip { 
-            width: 50px; height: 35px; 
+            width: 45px; height: 32px; 
             background: linear-gradient(135deg, #fceabb 0%, #f8b500 100%);
-            border-radius: 5px;
-            position: relative;
+            border-radius: 6px;
         }
 
         .number { 
-            font-size: 1.4rem; 
-            letter-spacing: 4px; 
+            font-size: 1.2rem; 
+            letter-spacing: 3px; 
             font-weight: 500;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
-        .info-footer {
+        .info {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
+            flex-direction: column;
         }
 
-        .name-label { font-size: 0.65rem; text-transform: uppercase; color: #888; letter-spacing: 1px; }
-        .name-val { font-size: 0.9rem; text-transform: uppercase; margin-top: 2px; }
-        
-        /* Master/Visa style circles */
-        .logo-circles {
+        .name { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .role { font-size: 0.65rem; color: #aaa; margin-top: 4px; }
+
+        .logo-mark {
+            position: absolute;
+            bottom: 25px; right: 25px;
             display: flex;
-            opacity: 0.7;
         }
-        .circle { width: 30px; height: 30px; border-radius: 50%; }
-        .c1 { background: #eb001b; margin-right: -10px; }
-        .c2 { background: #f79e1b; }
+        .circle { width: 25px; height: 25px; border-radius: 50%; opacity: 0.8; }
+        .c1 { background: #ff0000; margin-right: -10px; }
+        .c2 { background: #ff9900; }
     </style>
 </head>
 <body>
@@ -87,42 +82,46 @@
     <div class="card" id="card">
         <div class="chip"></div>
         
-        <div class="number">**** **** **** 2026</div>
+        <div class="number" id="card-number">**** **** **** ----</div>
         
-        <div class="info-footer">
-            <div>
-                <div class="name-label">Card Holder</div>
-                <div class="name-val">Tatson Jacomo</div>
-                <div class="name-label" style="margin-top: 5px;">Front-end Developer</div>
-            </div>
-            <div class="logo-circles">
-                <div class="circle c1"></div>
-                <div class="circle c2"></div>
-            </div>
+        <div class="info">
+            <div class="name">Tatson Jacomo</div>
+            <div class="role">Front-end Developer</div>
+        </div>
+
+        <div class="logo-mark">
+            <div class="circle c1"></div>
+            <div class="circle c2"></div>
         </div>
     </div>
 
     <script>
         const blob = document.getElementById("blob");
         const card = document.getElementById("card");
+        const cardNumber = document.getElementById("card-number");
 
+        // 1. Lógica para o ANO AUTOMÁTICO
+        const currentYear = new Date().getFullYear();
+        cardNumber.innerText = `**** **** **** ${currentYear}`;
+
+        // 2. Movimento do Brilho (Blob) e Inclinação do Cartão
         document.body.onmousemove = event => {
             const { clientX, clientY } = event;
             
-            // Move the blob
+            // Move o brilho com suavidade
             blob.animate({
                 left: `${clientX}px`,
                 top: `${clientY}px`
             }, { duration: 3000, fill: "forwards" });
 
-            // 3D Tilt Effect
+            // Efeito de inclinação 3D do cartão
             const xRotation = ((clientY - window.innerHeight / 2) / window.innerHeight) * 20;
             const yRotation = ((clientX - window.innerWidth / 2) / window.innerWidth) * -20;
             
             card.style.transform = `rotateX(${xRotation}deg) rotateY(${yRotation}deg)`;
-        };
+        }
 
-        // Reset tilt when mouse leaves
+        // Reseta a posição do cartão quando o mouse sai da tela
         document.body.onmouseleave = () => {
             card.style.transform = `rotateX(0deg) rotateY(0deg)`;
         }
